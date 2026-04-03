@@ -35,3 +35,19 @@ body {
 .input:focus {
   border-color: #111827;
 }
+
+.input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  .input {
+    background: #1f2937;
+    color: white;
+    border-color: #374151;
+  }
+}

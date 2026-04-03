@@ -7,7 +7,7 @@ export default function Buyer() {
 
   useEffect(() => {
     fetch("/api/crops/list")
-      .then((res) => res.json())
+      .then(res => res.json())
       .then(setCrops);
   }, []);
 
@@ -21,20 +21,42 @@ export default function Buyer() {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-6">Marketplace</h1>
+      <h1 className="text-2xl font-semibold mb-6">🛒 Marketplace</h1>
 
-      <div className="grid grid-cols-3 gap-6">
-        {crops.map((crop) => (
-          <div key={crop.id} className="bg-white p-5 rounded-xl border">
-            <h2>{crop.name}</h2>
-            <p>{crop.quantity}</p>
-            <p>₹ {crop.price}</p>
-            <button onClick={() => buy(crop.id)}>
-              Buy
-            </button>
-          </div>
-        ))}
-      </div>
+      {crops.length === 0 ? (
+        <p>No crops available</p>
+      ) : (
+        <table className="w-full bg-white dark:bg-[#111827] border rounded-xl text-sm">
+          <thead className="text-gray-500 text-left">
+            <tr>
+              <th className="p-3">Crop</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Location</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {crops.map(c => (
+              <tr key={c.id} className="border-t">
+                <td className="p-3">{c.name}</td>
+                <td>{c.quantity}</td>
+                <td>₹ {c.price}</td>
+                <td>{c.location}</td>
+                <td>
+                  <button
+                    onClick={()=>buy(c.id)}
+                    className="bg-green-600 text-white px-3 py-1 rounded"
+                  >
+                    Buy
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </Layout>
   );
 }

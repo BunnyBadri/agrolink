@@ -13,31 +13,34 @@ export default function Login() {
 
     const data = await res.json();
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-
-      if (data.role === "farmer") {
-        window.location.href = "/dashboard/farmer";
-      } else {
-        window.location.href = "/dashboard/buyer";
-      }
+    if (data.role === "farmer") {
+      window.location.href = "/dashboard/farmer";
+    } else if (data.role === "buyer") {
+      window.location.href = "/dashboard/buyer";
     } else {
       alert(data.error);
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="p-8 bg-white rounded-xl shadow-lg">
-        <h1 className="text-2xl font-bold mb-4">Login</h1>
+    <div className="h-screen flex items-center justify-center bg-[#f3f7f3] dark:bg-[#0f172a]">
 
-        <input className="border p-2 mb-2 w-full" onChange={(e)=>setEmail(e.target.value)} />
-        <input type="password" className="border p-2 mb-4 w-full" onChange={(e)=>setPassword(e.target.value)} />
+      <div className="bg-white dark:bg-[#111827] p-8 rounded-xl border w-80">
+        <h1 className="text-xl font-semibold mb-4">🌾 Login</h1>
 
-        <button onClick={handleLogin} className="bg-black text-white px-4 py-2 w-full">
+        <input className="input mb-2" placeholder="Email"
+          onChange={(e)=>setEmail(e.target.value)}/>
+        <input type="password" className="input mb-4" placeholder="Password"
+          onChange={(e)=>setPassword(e.target.value)}/>
+
+        <button
+          onClick={handleLogin}
+          className="w-full bg-green-600 text-white py-2 rounded"
+        >
           Login
         </button>
       </div>
+
     </div>
   );
 }
