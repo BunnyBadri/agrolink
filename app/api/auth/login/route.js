@@ -3,16 +3,14 @@ import { signToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const data = await req.json();
-
   try {
+    const data = await req.json();
+
     const user = await loginUser(data);
 
     const token = signToken(user);
 
-    const res = NextResponse.json({
-      role: user.role,
-    });
+    const res = NextResponse.json({ role: user.role });
 
     res.cookies.set("token", token, {
       httpOnly: true,

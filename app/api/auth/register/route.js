@@ -1,30 +1,17 @@
-import pool from "../../../../lib/db";
+import { registerUser } from "@/services/authService";
+import { validateRegister } from "@/utils/validate";
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { name, email, password, role } = body;
+    const data = await req.json();
 
-    const check = await pool.query(
-      "SELECT * FROM users WHERE email=$1",
-      [email]
-    );
+    validateRegister(data);
 
-    if (check.rows.length > 0) {
-      return NextResponse.json({ error: "User exists" });
-    }
+    const user = await registerUser(data);
 
-    const hashed = await bcrypt.hash(password, 10);
-
-    await pool.query(
-      "INSERT INTO users (name,email,password,role) VALUES ($1,$2,$3,$4)",
-      [name, email, hashed, role]
-    );
-
-    return NextResponse.json({ success: true });
-  } catch (e) {
-    return NextResponse.json({ error: e.message });
+    return NextResponse.json({ success: true, user });
+  } catch (err) {
+    return NextResponse.json({ error: err.message });
   }
 }

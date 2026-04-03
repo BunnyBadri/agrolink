@@ -4,10 +4,12 @@ import pool from "@/lib/db";
 export async function registerUser(data) {
   const hashed = await bcrypt.hash(data.password, 10);
 
-  await pool.query(
-    "INSERT INTO users (name, email, password, role) VALUES ($1,$2,$3,$4)",
+  const result = await pool.query(
+    "INSERT INTO users (name,email,password,role) VALUES ($1,$2,$3,$4) RETURNING *",
     [data.name, data.email, hashed, data.role]
   );
+
+  return result.rows[0];
 }
 
 export async function loginUser(data) {

@@ -1,16 +1,23 @@
 import { addCrop } from "@/services/cropService";
+import { validateCrop } from "@/utils/validate";
 import { verifyToken } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export async function POST(req) {
-  const token = cookies().get("token")?.value;
+  try {
+    const token = cookies().get("token")?.value;
+    const user = verifyToken(token);
 
-  const user = verifyToken(token);
-  if (!user) return Response.json({ error: "Unauthorized" });
+    if (!user) return Response.json({ error: "Unauthorized" });
 
-  const data = await req.json();
+    const data = await req.json();
 
-  await addCrop(data, user.id);
+    validateCrop(data);
 
-  return Response.json({ message: "added" });
+    const crop = await addCrop(data, user.id);
+
+    return Response.json(crop);
+  } catch (err) {
+    return Response.json({ error: err.message });
+  }
 }

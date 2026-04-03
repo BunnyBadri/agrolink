@@ -8,17 +8,10 @@ export async function createOrder(cropId, buyerId) {
 
   const c = crop.rows[0];
 
-  await pool.query(
-    "INSERT INTO orders (crop_id, buyer_id, farmer_id, price) VALUES ($1,$2,$3,$4)",
+  const result = await pool.query(
+    "INSERT INTO orders (crop_id,buyer_id,farmer_id,price) VALUES ($1,$2,$3,$4) RETURNING *",
     [cropId, buyerId, c.farmer_id, c.price]
   );
-}
 
-export async function getFarmerOrders(userId) {
-  const result = await pool.query(
-    "SELECT * FROM orders WHERE farmer_id=$1 ORDER BY id DESC",
-    [userId]
-  );
-
-  return result.rows;
+  return result.rows[0];
 }
