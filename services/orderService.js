@@ -1,7 +1,7 @@
-import db from "@/lib/db";
+import pool from "@/lib/db";
 
 export async function placeOrder(data, userId) {
-  await db.query(
+  await pool.query(
     "INSERT INTO orders (crop_id,buyer_id,quantity,status) VALUES (?,?,?,?)",
     [data.cropId, userId, data.quantity, "pending"]
   );

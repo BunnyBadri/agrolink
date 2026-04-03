@@ -1,18 +1,18 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import db from "@/lib/db";
+import pool from "@/lib/db";
 
 export async function registerUser(data) {
   const hashed = await bcrypt.hash(data.password, 10);
 
-  await db.query(
+  await pool.query(
     "INSERT INTO users (name,email,password,role) VALUES (?,?,?,?)",
     [data.name, data.email, hashed, data.role]
   );
 }
 
 export async function loginUser(data) {
-  const [rows] = await db.query("SELECT * FROM users WHERE email=?", [data.email]);
+  const [rows] = await pool.query("SELECT * FROM users WHERE email=?", [data.email]);
 
   const user = rows[0];
   if (!user) throw new Error("User not found");
