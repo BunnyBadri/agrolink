@@ -6,14 +6,18 @@ export default function Buyer() {
   const [crops, setCrops] = useState([]);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      window.location.href = "/login";
-    }
-
     fetch("/api/crops/list")
       .then((res) => res.json())
       .then(setCrops);
   }, []);
+
+  const buy = async (id) => {
+    await fetch("/api/orders/create", {
+      method: "POST",
+      body: JSON.stringify({ cropId: id }),
+    });
+    alert("Order placed");
+  };
 
   return (
     <Layout>
@@ -21,17 +25,11 @@ export default function Buyer() {
 
       <div className="grid grid-cols-3 gap-6">
         {crops.map((crop) => (
-          <div
-            key={crop.id}
-            className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm transition"
-          >
-            <h2 className="font-medium mb-2">{crop.name}</h2>
-
-            <p className="text-sm text-gray-500">Qty: {crop.quantity}</p>
-            <p className="text-sm text-gray-500">₹ {crop.price}</p>
-            <p className="text-sm text-gray-500">{crop.location}</p>
-
-            <button className="mt-4 w-full text-sm border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
+          <div key={crop.id} className="bg-white p-5 rounded-xl border">
+            <h2>{crop.name}</h2>
+            <p>{crop.quantity}</p>
+            <p>₹ {crop.price}</p>
+            <button onClick={() => buy(crop.id)}>
               Buy
             </button>
           </div>
